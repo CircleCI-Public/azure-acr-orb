@@ -1,5 +1,6 @@
 # Azure ACR Orb [![CircleCI status](https://circleci.com/gh/CircleCI-Public/azure-acr-orb.svg "CircleCI status")](https://circleci.com/gh/CircleCI-Public/azure-acr-orb) [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/circleci/azure-acr)](https://circleci.com/orbs/registry/orb/circleci/azure-acr) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/CircleCI-Public/azure-acr-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/orbs)
-CircleCI orb for interacting with Amazon's Elastic Container Registry (ECR).
+
+CircleCI orb for interacting with Microsoft's Azure Container Registry (ACR).
 
 ## Parameters
 Following is the full list of parameters required by this orb's various commands and jobs. For details, see the [listing in the Orb Registry](https://circleci.com/orbs/registry/orb/circleci/azure-acr).
@@ -28,6 +29,7 @@ Following is the full list of parameters required by this orb's various commands
 See below for a simple example of this orb's `build_and_push_image` job. For details, see the [listing in the Orb Registry](https://circleci.com/orbs/registry/orb/circleci/azure-acr).
 
 ### Simple
+
 ```yaml
 version: 2.1
 
@@ -39,10 +41,9 @@ workflows:
     jobs:
       # with default parameter values, the following would be sufficient to build and push an image to ACR
       - azure-acr/build_and_push_image:
-		  registry-name: myRegistryName
-		  login-server-name: myregistryname.azurecr.io
-		  repo: myRepositoryName
-
+          registry-name: myRegistryName
+          login-server-name: myregistryname.azurecr.io
+          repo: myRepositoryName
 ```
 
 ## Contributing
