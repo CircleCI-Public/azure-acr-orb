@@ -1,0 +1,156 @@
+description: >
+  Install Azure CLI, if needed, and configure. Log into ACR
+  and push image to repository. Requires environment variables
+  for . We recommend these be saved in a Project (https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) or in Contexts
+  (https://circleci.com/docs/2.0/contexts).
+
+parameters:
+  executor:
+    type: executor
+    description: executor to use for this job
+    default: default
+
+  azure-username:
+    type: env_var_name
+    description: |
+      Environment variable storing your Azure username. Only applicable for
+      user logins.
+    default: AZURE_USERNAME
+
+  azure-password:
+    type: env_var_name
+    description: |
+      Environment variable storing your Azure password. Only applicable for
+      user logins.
+    default: AZURE_PASSWORD
+
+  azure-sp:
+    type: env_var_name
+    description: |
+      Name of environment variable storing the full name of the Service
+      Principal, in the form http://app-url. Only applicable for Service
+      Principal logins.
+    default: AZURE_SP
+
+  azure-sp-password:
+    type: env_var_name
+    description: |
+      Name of environment variable storing the password for the Service
+      Principal. Only applicable for Service Principal logins.
+    default: AZURE_SP_PASSWORD
+
+  azure-sp-tenant:
+    type: env_var_name
+    description: |
+      Name of environment variable storing the tenant ID for the Service
+      Principal. Only applicable for Service Principal logins.
+    default: AZURE_SP_TENANT
+
+  alternate-tenant:
+    type: boolean
+    description: Use an alternate tenant. Only applicable for user logins.
+    default: false
+
+  azure-tenant:
+    type: env_var_name
+    description: |
+      Environment variable storing your Azure tenant, necessary if
+      `alternate-tenant` is set to true. Only applicable for user logins.
+    default: AZURE_TENANT
+
+  registry-name:
+    type: string
+    description: The name of your ACR registry
+
+  login-server-name:
+    type: string
+    description: >
+      The Azure login server for your ACR instance,
+      e.g. {yourregistryname}.azure.io
+
+  repo:
+    type: string
+    description: A URI to an ACR login-server-name/repository
+
+  tag:
+    type: string
+    description: Docker tag (default = latest)
+    default: "latest"
+
+  checkout:
+    description: >
+      Boolean for whether or not to checkout as a first step. Default is true.
+    type: boolean
+    default: true
+
+  attach-workspace:
+    description: >
+      Boolean for whether or not to attach to an existing workspace. Default
+      is false.
+    type: boolean
+    default: false
+
+  workspace-root:
+    description: >
+      Workspace root path that is either an absolute path or a path relative
+      to the working directory. Defaults to '.' (the working directory)
+    type: string
+    default: "."
+
+  dockerfile:
+    description: Name of dockerfile to use. Defaults to Dockerfile.
+    type: string
+    default: Dockerfile
+
+  path:
+    description: >
+      Path to the directory containing your Dockerfile and build context.
+      Defaults to . (working directory).
+    type: string
+    default: .
+
+  extra-build-args:
+    description: >
+      Extra flags to pass to docker build. For examples, see
+      https://docs.docker.com/engine/reference/commandline/build
+    type: string
+    default: ""
+
+steps:
+  - when:
+      condition: << parameters.checkout >>
+      steps:
+        - checkout
+
+  - azure-cli/install
+
+  - azure-cli/login-with-user-or-service-principal:
+      azure-username: << parameters.azure-username >>
+      azure-password: << parameters.azure-password >>
+      azure-sp: << parameters.azure-sp >>
+      azure-sp-password: << parameters.azure-sp-password >>
+      azure-sp-tenant: << parameters.azure-sp-tenant >>
+      alternate-tenant: << parameters.alternate-tenant >>
+      azure-tenant: << parameters.azure-tenant >>
+
+  - when:
+      condition: << parameters.attach-workspace >>
+      steps:
+        - attach_workspace:
+            at: << parameters.workspace-root >>
+
+  - acr-login:
+      registry-name: << parameters.registry-name >>
+
+  - build-image:
+      login-server-name: << parameters.login-server-name >>
+      repo: << parameters.repo >>
+      tag: << parameters.tag >>
+      dockerfile: << parameters.dockerfile >>
+      path: << parameters.path >>
+      extra-build-args: << parameters.extra-build-args >>
+
+  - push-image:
+      login-server-name: << parameters.login-server-name >>
+      repo: << parameters.repo >>
+      tag: << parameters.tag >>

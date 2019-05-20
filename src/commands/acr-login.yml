@@ -1,0 +1,15 @@
+description: "Authenticate into Azure Container Registry service"
+
+parameters:
+  registry-name:
+    type: string
+    description: >
+      Name of env var storing your registry name,
+      defaults to REGISTRY_NAME
+    default: REGISTRY_NAME
+
+steps:
+  - run:
+      name: Log into ACR
+      command: |
+        az acr login --name << parameters.registry-name >>

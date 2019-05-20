@@ -1,0 +1,17 @@
+version: 2.1
+
+orbs:
+  azure-acr: ttrahan/azure-acr@dev:alpha
+
+workflows:
+  build-and-push-image:
+    jobs:
+      - azure-acr/build_and_push_image:
+          context: ttrahan
+          azure-sp: AZURE_SP
+          azure-sp-password: AZURE_SP_PASSWORD
+          azure-sp-tenant: AZURE_SP_TENANT
+          registry-name: ttrahanRegistry
+          login-server-name: ttrahanregistry.azurecr.io
+          repo: test
+          tag: $CIRCLE_BUILD_NUM
