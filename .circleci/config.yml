@@ -68,7 +68,7 @@ workflows:
           login-server-name: ttrahanregistry.azurecr.io
           repo: test
           tag: $CIRCLE_BUILD_NUM
-          filter: *integration-dev_filters
+          filters: *integration-dev_filters
 
       # triggered by master branch commits
       - azure-acr/build-and-push-image:
@@ -81,7 +81,7 @@ workflows:
           login-server-name: ttrahanregistry.azurecr.io
           repo: test
           tag: $CIRCLE_BUILD_NUM
-          filter: *integration-master_filters
+          filters: *integration-master_filters
 
       # patch, minor, or major publishing
       - orb-tools/dev-promote-prod:
