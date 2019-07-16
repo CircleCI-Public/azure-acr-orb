@@ -1,17 +1,124 @@
 version: 2.1
 
 orbs:
-  azure-acr: ttrahan/azure-acr@dev:alpha
+  azure-acr: circleci/azure-acr@dev:alpha
+  orb-tools: circleci/orb-tools@8.27.3
+
+# yaml anchor filters
+integration-dev_filters: &integration-dev_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /integration-.*/
+
+integration-master_filters: &integration-master_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /master-.*/
+
+prod-deploy_requires: &prod-deploy_requires
+  [
+    build-and-push-master
+  ]
 
 workflows:
-  build-and-push-image:
+  lint_pack-validate_publish-dev:
     jobs:
-      - azure-acr/build_and_push_image:
-          context: ttrahan
-          azure-sp: AZURE_SP
-          azure-sp-password: AZURE_SP_PASSWORD
-          azure-sp-tenant: AZURE_SP_TENANT
-          registry-name: ttrahanRegistry
-          login-server-name: ttrahanregistry.azurecr.io
-          repo: test
-          tag: $CIRCLE_BUILD_NUM
+      - orb-tools/lint
+
+      - orb-tools/pack:
+          requires: [orb-tools/lint]
+
+      - orb-tools/publish-dev:
+          orb-name: circleci/azure-acr
+          context: orb-publishing
+          requires: [orb-tools/pack]
+
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-dev
+          context: orb-publishing
+          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          requires: [orb-tools/publish-dev]
+          filters:
+            branches:
+              ignore: master
+
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-master
+          context: orb-publishing
+          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          tag: master
+          cleanup-tags: true
+          requires: [orb-tools/publish-dev]
+          filters:
+            branches:
+              only: master
+
+  integration-tests_prod-release:
+    jobs:
+      # triggered by non-master branch commits
+      - azure-acr/build-and-push-image:
+          name: build-and-push-dev
+          context: orb-publishing
+          registry-name: azureorbs
+          login-server-name: azureorbs.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
+          filters: *integration-dev_filters
+
+      # triggered by master branch commits
+      - azure-acr/build-and-push-image:
+          name: build-and-push-master
+          context: orb-publishing
+          registry-name: azureorbs
+          login-server-name: azureorbs.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
+          filters: *integration-master_filters
+
+      # patch, minor, or major publishing
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-patch
+          context: orb-publishing
+          orb-name: circleci/azure-acr
+          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-patch.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-minor
+          context: orb-publishing
+          orb-name: circleci/azure-acr
+          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
+          release: minor
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-minor.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-major
+          context: orb-publishing
+          orb-name: circleci/azure-acr
+          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
+          release: major
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-major.*/
