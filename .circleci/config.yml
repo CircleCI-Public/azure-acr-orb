@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   azure-acr: circleci/azure-acr@dev:alpha
-  orb-tools: circleci/orb-tools@8.27.1
+  orb-tools: circleci/orb-tools@8.27.3
 
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
@@ -61,26 +61,20 @@ workflows:
       - azure-acr/build-and-push-image:
           name: build-and-push-dev
           context: orb-publishing
-          azure-sp: AZURE_SP
-          azure-sp-password: AZURE_SP_PASSWORD
-          azure-sp-tenant: AZURE_SP_TENANT
-          registry-name: ttrahanRegistry
-          login-server-name: ttrahanregistry.azurecr.io
-          repo: test
-          tag: $CIRCLE_BUILD_NUM
+          registry-name: azure-orbs
+          login-server-name: azure-orbs.azurecr.io
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
           filters: *integration-dev_filters
 
       # triggered by master branch commits
       - azure-acr/build-and-push-image:
           name: build-and-push-master
           context: orb-publishing
-          azure-sp: AZURE_SP
-          azure-sp-password: AZURE_SP_PASSWORD
-          azure-sp-tenant: AZURE_SP_TENANT
-          registry-name: ttrahanRegistry
-          login-server-name: ttrahanregistry.azurecr.io
-          repo: test
-          tag: $CIRCLE_BUILD_NUM
+          registry-name: azure-orbs
+          login-server-name: azure-orbs.azurecr.io
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
           filters: *integration-master_filters
 
       # patch, minor, or major publishing
@@ -89,6 +83,7 @@ workflows:
           context: orb-publishing
           orb-name: circleci/azure-acr
           ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
           requires: *prod-deploy_requires
           filters:
             branches:
@@ -101,6 +96,7 @@ workflows:
           context: orb-publishing
           orb-name: circleci/azure-acr
           ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
           release: minor
           requires: *prod-deploy_requires
           filters:
@@ -114,6 +110,7 @@ workflows:
           context: orb-publishing
           orb-name: circleci/azure-acr
           ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
+          cleanup-tags: true
           release: major
           requires: *prod-deploy_requires
           filters:

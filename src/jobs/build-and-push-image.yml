@@ -119,17 +119,17 @@ parameters:
 
 steps:
   - build-and-push-image:
-      azure-username: << parameters.azure-username >>
-      azure-password: << parameters.azure-password >>
-      azure-sp: << parameters.azure-sp >>
-      azure-sp-password: << parameters.azure-sp-password >>
-      azure-sp-tenant: << parameters.azure-sp-tenant >>
-      alternate-tenant: << parameters.alternate-tenant >>
-      azure-tenant: << parameters.azure-tenant >>
-      registry-name: << parameters.registry-name >>
-      login-server-name: << parameters.login-server-name >>
-      repo: << parameters.repo >>
-      tag: << parameters.tag >>
-      dockerfile: << parameters.dockerfile >>
-      path: << parameters.path >>
-      extra-build-args: << parameters.extra-build-args >>
+      azure-username: <<parameters.azure-username>>
+      azure-password: <<parameters.azure-password>>
+      azure-sp: <<parameters.azure-sp>>
+      azure-sp-password: <<parameters.azure-sp-password>>
+      azure-sp-tenant: <<parameters.azure-sp-tenant>>
+      alternate-tenant: <<parameters.alternate-tenant>>
+      azure-tenant: <<parameters.azure-tenant>>
+      registry-name: <<parameters.registry-name>>
+      login-server-name: <<parameters.login-server-name>>
+      repo: <<parameters.repo>>
+      tag: <<parameters.tag>>
+      dockerfile: <<parameters.dockerfile>>
+      path: <<parameters.path>>
+      extra-build-args: <<parameters.extra-build-args>>

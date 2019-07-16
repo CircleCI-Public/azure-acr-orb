@@ -6,7 +6,4 @@ description: >
 
 orbs:
   azure-cli: circleci/azure-cli@1.1.0
-
-executors:
-  default:
-    machine: true
+  docker: circleci/docker@0.5.8
