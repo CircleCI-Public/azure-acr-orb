@@ -63,6 +63,8 @@ workflows:
           context: orb-publishing
           registry-name: azureorbs
           login-server-name: azureorbs.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
           repo: azure-acr-orb
           tag: $CIRCLE_TAG
           filters: *integration-dev_filters
@@ -73,6 +75,8 @@ workflows:
           context: orb-publishing
           registry-name: azureorbs
           login-server-name: azureorbs.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
           repo: azure-acr-orb
           tag: $CIRCLE_TAG
           filters: *integration-master_filters
