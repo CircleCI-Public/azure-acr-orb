@@ -61,8 +61,8 @@ workflows:
       - azure-acr/build-and-push-image:
           name: build-and-push-dev
           context: orb-publishing
-          registry-name: azure-orbs
-          login-server-name: azure-orbs.azurecr.io
+          registry-name: azureorbs
+          login-server-name: azureorbs.azurecr.io
           repo: azure-acr-orb
           tag: $CIRCLE_TAG
           filters: *integration-dev_filters
@@ -71,8 +71,8 @@ workflows:
       - azure-acr/build-and-push-image:
           name: build-and-push-master
           context: orb-publishing
-          registry-name: azure-orbs
-          login-server-name: azure-orbs.azurecr.io
+          registry-name: azureorbs
+          login-server-name: azureorbs.azurecr.io
           repo: azure-acr-orb
           tag: $CIRCLE_TAG
           filters: *integration-master_filters
