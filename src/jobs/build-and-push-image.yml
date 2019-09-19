@@ -133,3 +133,6 @@ steps:
       dockerfile: <<parameters.dockerfile>>
       path: <<parameters.path>>
       extra-build-args: <<parameters.extra-build-args>>
+      checkout: <<parameters.checkout>>
+      attach-workspace: <<parameters.attach-workspace>>
+      workspace-root: <<parameters.workspace-root>>
