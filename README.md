@@ -22,7 +22,7 @@ Following is the full list of parameters required by this orb's various commands
 | `path` | `string` | `.` | path to Dockerfile, defaults to the working directory |
 | `registry-name` | `string` |  N/A | name of your ACR registry |
 | `repo` | `string` |  N/A | name of your ACR repository |
-| `tag` | `string` |  `latest` | ACR image tag |
+| `tag` | `string` |  `latest` | ACR image tag (comma-delimited string) |
 | `workspace-root` | `string` |  `.` | Workspace root path that is either an absolute path or a path relative to the working directory. |
 
 ## Usage

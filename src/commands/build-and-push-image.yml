@@ -72,7 +72,7 @@ parameters:
 
   tag:
     type: string
-    description: Docker tag (default = latest)
+    description: Comma-delimited string containing docker image tags (default = latest)
     default: "latest"
 
   checkout:
