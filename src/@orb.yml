@@ -6,4 +6,4 @@ description: >
 
 orbs:
   azure-cli: circleci/azure-cli@1.1.0
-  docker: circleci/docker@0.5.8
+  docker: circleci/docker@0.5.18
