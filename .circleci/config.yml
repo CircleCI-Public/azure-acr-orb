@@ -40,8 +40,8 @@ workflows:
       - azure-acr/build-and-push-image:
           name: build-and-push
           context: orb-publishing
-          registry-name: azureorbs
-          login-server-name: azureorbs.azurecr.io
+          registry-name: azureacrorb
+          login-server-name: azureacrorb.azurecr.io
           dockerfile: test.Dockerfile
           path: test
           repo: azure-acr-orb
