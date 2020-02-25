@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   azure-acr: circleci/azure-acr@dev:alpha
   # TODO: Replace with release version of docker orb once ready
-  docker: circleci/docker@dev:bc60adc
+  docker: circleci/docker@dev:799e252
   orb-tools: circleci/orb-tools@9.0
 
 # Pipeline parameters
