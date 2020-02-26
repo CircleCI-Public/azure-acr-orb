@@ -2,8 +2,11 @@ version: 2.1
 
 description: >
   Build images and push them to Azure Container Registry.
-  See this orb's source: https://github.com/CircleCI-Public/azure-acr-orb
+
+display:
+  source_url: https://github.com/CircleCI-Public/azure-acr-orb
 
 orbs:
   azure-cli: circleci/azure-cli@1.1.0
-  docker: circleci/docker@0.5.18
+  # TODO: Replace with release version of docker orb once ready
+  docker: circleci/docker@dev:7545885

@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   azure-acr: circleci/azure-acr@dev:alpha
   # TODO: Replace with release version of docker orb once ready
-  docker: circleci/docker@dev:799e252
+  docker: circleci/docker@dev:7545885
   orb-tools: circleci/orb-tools@9.0
 
 # Pipeline parameters
@@ -48,10 +48,6 @@ workflows:
           path: test
           repo: azure-acr-orb
           tag: $CIRCLE_TAG
-          pre-steps:
-            - docker/install-docker-credential-helper
-            - docker/configure-docker-credentials-store
-
 
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: circleci/azure-acr
