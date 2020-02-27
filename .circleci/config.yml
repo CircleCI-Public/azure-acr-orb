@@ -2,28 +2,23 @@ version: 2.1
 
 orbs:
   azure-acr: circleci/azure-acr@dev:alpha
-  orb-tools: circleci/orb-tools@8.27.3
+  docker: circleci/docker@0.6.0
+  orb-tools: circleci/orb-tools@9.0
 
-# yaml anchor filters
-integration-dev_filters: &integration-dev_filters
-  branches:
-    ignore: /.*/
-  tags:
-    only: /integration-.*/
-
-integration-master_filters: &integration-master_filters
-  branches:
-    ignore: /.*/
-  tags:
-    only: /master-.*/
-
-prod-deploy_requires: &prod-deploy_requires
-  [
-    build-and-push-master
-  ]
+# Pipeline parameters
+parameters:
+  # These pipeline parameters are required by the "trigger-integration-tests-workflow"
+  # job, by default.
+  run-integration-tests:
+    type: boolean
+    default: false
+  dev-orb-version:
+    type: string
+    default: "dev:alpha"
 
 workflows:
   lint_pack-validate_publish-dev:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint
 
@@ -35,90 +30,38 @@ workflows:
           context: orb-publishing
           requires: [orb-tools/pack]
 
-      - orb-tools/trigger-integration-workflow:
+      - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-dev
           context: orb-publishing
-          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
           requires: [orb-tools/publish-dev]
-          filters:
-            branches:
-              ignore: master
 
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-master
+  integration-tests_prod-release:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - azure-acr/build-and-push-image:
+          name: build-and-push
           context: orb-publishing
-          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
-          tag: master
-          cleanup-tags: true
-          requires: [orb-tools/publish-dev]
+          registry-name: azureacrorb
+          login-server-name: azureacrorb.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
+          pre-steps:
+            - docker/install-docker-credential-helper
+            - docker/configure-docker-credentials-store
+
+
+      - orb-tools/dev-promote-prod-from-commit-subject:
+          orb-name: circleci/azure-acr
+          context: orb-publishing
+          add-pr-comment: true
+          bot-token-variable: GHI_TOKEN
+          bot-user: cpe-bot
+          fail-if-semver-not-indicated: true
+          publish-version-tag: false
+          requires:
+            - build-and-push
           filters:
             branches:
               only: master
-
-  integration-tests_prod-release:
-    jobs:
-      # triggered by non-master branch commits
-      - azure-acr/build-and-push-image:
-          name: build-and-push-dev
-          context: orb-publishing
-          registry-name: azureorbs
-          login-server-name: azureorbs.azurecr.io
-          dockerfile: test.Dockerfile
-          path: test
-          repo: azure-acr-orb
-          tag: $CIRCLE_TAG
-          filters: *integration-dev_filters
-
-      # triggered by master branch commits
-      - azure-acr/build-and-push-image:
-          name: build-and-push-master
-          context: orb-publishing
-          registry-name: azureorbs
-          login-server-name: azureorbs.azurecr.io
-          dockerfile: test.Dockerfile
-          path: test
-          repo: azure-acr-orb
-          tag: $CIRCLE_TAG
-          filters: *integration-master_filters
-
-      # patch, minor, or major publishing
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-patch
-          context: orb-publishing
-          orb-name: circleci/azure-acr
-          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
-          cleanup-tags: true
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-patch.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-minor
-          context: orb-publishing
-          orb-name: circleci/azure-acr
-          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
-          cleanup-tags: true
-          release: minor
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-minor.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-major
-          context: orb-publishing
-          orb-name: circleci/azure-acr
-          ssh-fingerprints: 70:8f:c6:8c:5a:57:46:d7:39:b7:ff:4c:94:a4:7f:6a
-          cleanup-tags: true
-          release: major
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-major.*/
