@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   azure-acr: circleci/azure-acr@dev:alpha
-  docker: circleci/docker@0.6.0
+  docker: circleci/docker@0.6
   orb-tools: circleci/orb-tools@9.0
 
 # Pipeline parameters
