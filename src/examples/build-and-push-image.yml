@@ -1,0 +1,17 @@
+description: >
+  Build and push a Docker image to the Azure Container Registry (ACR)
+
+usage:
+  version: 2.1
+
+  orbs:
+    azure-acr: circleci/azure-acr@x.y.z
+
+  workflows:
+    build-and-publish-docker-image:
+      jobs:
+        - azure-acr/build-and-push-image:
+            registry-name: exampleregistry
+            login-server-name: exampleregistry.azurecr.io
+            repo: example-repository
+            tag: $CIRCLE_TAG

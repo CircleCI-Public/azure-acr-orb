@@ -7,8 +7,18 @@ parameters:
       Name of env var storing your registry name,
       defaults to REGISTRY_NAME
     default: REGISTRY_NAME
+  configure-docker-credentials-store:
+    type: boolean
+    default: true
+    description: >
+      Configure Docker to use a credentials store.
+      Supported platforms: Linux/macOS.
 
 steps:
+  - when:
+      condition: <<parameters.configure-docker-credentials-store>>
+      steps:
+        - configure-docker-credentials-store
   - run:
       name: Log into ACR
       command: |
