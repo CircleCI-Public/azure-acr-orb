@@ -12,14 +12,13 @@ parameters:
     default: true
     description: >
       Configure Docker to use a credentials store.
-      This option is only supported on Ubuntu/Debian platforms.
+      Supported platforms: Linux/macOS.
 
 steps:
   - when:
       condition: <<parameters.configure-docker-credentials-store>>
       steps:
-        - docker/install-docker-credential-helper
-        - docker/configure-docker-credentials-store
+        - configure-docker-credentials-store
   - run:
       name: Log into ACR
       command: |

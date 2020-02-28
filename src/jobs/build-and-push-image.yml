@@ -74,7 +74,7 @@ parameters:
     default: true
     description: >
       Configure Docker to use a credentials store.
-      This option is only supported on Ubuntu/Debian platforms.
+      Supported platforms: Linux/macOS.
 
   repo:
     type: string
