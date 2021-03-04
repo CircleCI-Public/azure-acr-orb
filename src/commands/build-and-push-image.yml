@@ -134,6 +134,11 @@ parameters:
     type: string
     default: ""
 
+  build:
+    description: Flag to trigger just build and not push image.
+    type: boolean
+    default: true
+
 steps:
   - when:
       condition: <<parameters.checkout>>
@@ -161,19 +166,25 @@ steps:
       registry-name: <<parameters.registry-name>>
       configure-docker-credentials-store: <<parameters.configure-docker-credentials-store>>
 
-  - docker/build:
-      step-name: Build Docker image for ACR
-      dockerfile: <<parameters.dockerfile>>
-      path: <<parameters.path>>
-      image: <<parameters.repo>>
-      tag: <<parameters.tag>>
-      extra_build_args: <<parameters.extra-build-args>>
-      lint-dockerfile: <<parameters.lint-dockerfile>>
-      treat-warnings-as-errors: <<parameters.treat-warnings-as-errors>>
-      registry: <<parameters.login-server-name>>
-
-  - docker/push:
-      step-name: Push Docker image to ACR
-      registry: <<parameters.login-server-name>>
-      image: <<parameters.repo>>
-      tag: <<parameters.tag>>
+  - when:
+      condidtion: <<parameters.build>>
+      steps:
+        - docker/build:
+            step-name: Build Docker image for ACR
+            dockerfile: <<parameters.dockerfile>>
+            path: <<parameters.path>>
+            image: <<parameters.repo>>
+            tag: <<parameters.tag>>
+            extra_build_args: <<parameters.extra-build-args>>
+            lint-dockerfile: <<parameters.lint-dockerfile>>
+            treat-warnings-as-errors: <<parameters.treat-warnings-as-errors>>
+            registry: <<parameters.login-server-name>>
+  - when:
+      condition:
+        not: <<parameters.build>>
+      steps:
+        - docker/push:
+            step-name: Push Docker image to ACR
+            registry: <<parameters.login-server-name>>
+            image: <<parameters.repo>>
+            tag: <<parameters.tag>>
