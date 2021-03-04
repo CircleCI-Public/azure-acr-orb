@@ -124,6 +124,11 @@ parameters:
     type: string
     default: ""
 
+  build:
+    description: Flag to just build and not push image.
+    type: boolean
+    default: true
+
 steps:
   - build-and-push-image:
       azure-username: <<parameters.azure-username>>
@@ -141,6 +146,7 @@ steps:
       dockerfile: <<parameters.dockerfile>>
       path: <<parameters.path>>
       extra-build-args: <<parameters.extra-build-args>>
+      build: <<parameters.build>>
       checkout: <<parameters.checkout>>
       attach-workspace: <<parameters.attach-workspace>>
       workspace-root: <<parameters.workspace-root>>
