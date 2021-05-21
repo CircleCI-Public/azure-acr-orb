@@ -26,12 +26,12 @@ workflows:
 
       - orb-tools/publish-dev:
           orb-name: circleci/azure-acr
-          context: orb-publishing
+          context: orb-publisher
           requires: [orb-tools/pack]
 
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-dev
-          context: orb-publishing
+          context: orb-publisher
           requires: [orb-tools/publish-dev]
 
   integration-tests_prod-release:
@@ -49,10 +49,11 @@ workflows:
 
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: circleci/azure-acr
-          context: orb-publishing
+          context: orb-publisher
           add-pr-comment: true
           bot-token-variable: GHI_TOKEN
-          bot-user: cpe-bot
+          bot-user: orb-publisher
+          ssh-fingerprints: 00:4d:7e:d7:f8:60:f9:5c:8c:6a:5d:89:49:40:a6:97
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
