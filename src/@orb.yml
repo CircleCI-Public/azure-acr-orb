@@ -8,5 +8,5 @@ display:
   source_url: https://github.com/CircleCI-Public/azure-acr-orb
 
 orbs:
-  azure-cli: circleci/azure-cli@1.1.0
+  azure-cli: circleci/azure-cli@1.2
   docker: circleci/docker@0.6
