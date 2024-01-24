@@ -16,16 +16,17 @@ release-filters: &release-filters
 workflows:
   test-deploy:
     jobs:
-      - azure-acr/build-and-push-image:
-          name: build-and-push
-          context: orb-publishing
-          registry-name: azureacrorb
-          login-server-name: azureacrorb.azurecr.io
-          dockerfile: test.Dockerfile
-          path: test
-          repo: azure-acr-orb
-          tag: $CIRCLE_TAG
-          filters: *filters
+      # Until we redo our Azure infrastructure, we can't test this job
+      # - azure-acr/build-and-push-image:
+      #     name: build-and-push
+      #     context: orb-publishing
+      #     registry-name: azureacrorb
+      #     login-server-name: azureacrorb.azurecr.io
+      #     dockerfile: test.Dockerfile
+      #     path: test
+      #     repo: azure-acr-orb
+      #     tag: $CIRCLE_TAG
+      #     filters: *filters
       - orb-tools/pack:
           filters: *release-filters
       - orb-tools/publish:
@@ -34,6 +35,5 @@ workflows:
           pub_type: production
           requires:
             - orb-tools/pack
-            - build-and-push
           context: orb-publisher
           filters: *release-filters
