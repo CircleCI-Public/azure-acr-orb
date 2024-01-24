@@ -13,6 +13,13 @@ release-filters: &release-filters
   tags:
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
+jobs:
+  integration-test:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - run: echo "Placeholder for integration tests while we wait for Azure infrastructure."
+
 workflows:
   test-deploy:
     jobs:
@@ -27,6 +34,8 @@ workflows:
       #     repo: azure-acr-orb
       #     tag: $CIRCLE_TAG
       #     filters: *filters
+      - integration-test:
+          filters: *filters
       - orb-tools/pack:
           filters: *release-filters
       - orb-tools/publish:
