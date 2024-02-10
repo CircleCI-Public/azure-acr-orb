@@ -26,7 +26,7 @@ Following is the full list of parameters required by this orb's various commands
 | `workspace-root` | `string` |  `.` | Workspace root path that is either an absolute path or a path relative to the working directory. |
 
 ## Usage
-See below for a simple example of this orb's `build_and_push_image` job. For details, see the [listing in the Orb Registry](https://circleci.com/orbs/registry/orb/circleci/azure-acr).
+See below for a simple example of this orb's `build-and-push-image` job. For details, see the [listing in the Orb Registry](https://circleci.com/orbs/registry/orb/circleci/azure-acr).
 
 ### Simple
 
@@ -34,13 +34,13 @@ See below for a simple example of this orb's `build_and_push_image` job. For det
 version: 2.1
 
 orbs:
-  azure-acr: circleci/azure-acr@1.0.0
+  azure-acr: circleci/azure-acr@0.2.0
 
 workflows:
   simple_build_and_push:
     jobs:
       # with default parameter values, the following would be sufficient to build and push an image to ACR
-      - azure-acr/build_and_push_image:
+      - azure-acr/build-and-push-image:
           registry-name: myRegistryName
           login-server-name: myregistryname.azurecr.io
           repo: myRepositoryName
