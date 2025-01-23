@@ -25,7 +25,7 @@ workflows:
     jobs:
       - azure-acr/build-and-push-image:
           name: build-and-push
-          context: orb-publishing
+          context: azure-acr-orb
           registry-name: azureacrorb
           login-server-name: azureacrorb.azurecr.io
           dockerfile: test.Dockerfile
@@ -43,5 +43,5 @@ workflows:
           pub_type: production
           requires:
             - orb-tools/pack
-          context: orb-publisher
+          context: azure-acr-orb
           filters: *release-filters
