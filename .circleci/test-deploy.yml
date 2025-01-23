@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  orb-tools: circleci/orb-tools@12.0
+  orb-tools: circleci/orb-tools@12.3.0
   azure-acr: {}
 
 filters: &filters
@@ -23,17 +23,16 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      # Until we redo our Azure infrastructure, we can't test this job
-      # - azure-acr/build-and-push-image:
-      #     name: build-and-push
-      #     context: orb-publishing
-      #     registry-name: azureacrorb
-      #     login-server-name: azureacrorb.azurecr.io
-      #     dockerfile: test.Dockerfile
-      #     path: test
-      #     repo: azure-acr-orb
-      #     tag: $CIRCLE_TAG
-      #     filters: *filters
+      - azure-acr/build-and-push-image:
+          name: build-and-push
+          context: orb-publishing
+          registry-name: azureacrorb
+          login-server-name: azureacrorb.azurecr.io
+          dockerfile: test.Dockerfile
+          path: test
+          repo: azure-acr-orb
+          tag: $CIRCLE_TAG
+          filters: *filters
       - integration-test:
           filters: *filters
       - orb-tools/pack:
