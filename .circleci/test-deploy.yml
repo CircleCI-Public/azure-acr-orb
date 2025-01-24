@@ -26,8 +26,8 @@ workflows:
       - azure-acr/build-and-push-image:
           name: build-and-push
           context: azure-acr-orb
-          registry-name: azureacrorb
-          login-server-name: azureacrorb.azurecr.io
+          registry-name: circleciorbstesting
+          login-server-name: circleciorbstesting.azurecr.io
           dockerfile: test.Dockerfile
           path: test
           repo: azure-acr-orb
