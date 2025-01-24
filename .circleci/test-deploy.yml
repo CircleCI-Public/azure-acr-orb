@@ -28,7 +28,7 @@ workflows:
           context: azure-acr-orb
           registry-name: circleciorbstesting
           login-server-name: circleciorbstesting.azurecr.io
-          azure-tenant: AZURE_TENANT_ID
+          azure-sp-tenant: AZURE_TENANT_ID
           azure-sp: AZURE_APP_ID
           azure-sp-password: AZURE_SECRET_VALUE
           dockerfile: test.Dockerfile
