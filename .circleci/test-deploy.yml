@@ -28,6 +28,8 @@ workflows:
           context: azure-acr-orb
           registry-name: circleciorbstesting
           login-server-name: circleciorbstesting.azurecr.io
+          azure-tenant: $AZURE_TENANT_ID
+          azure-sp: $AZURE_APP_ID
           dockerfile: test.Dockerfile
           path: test
           repo: azure-acr-orb
