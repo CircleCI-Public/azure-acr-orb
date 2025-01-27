@@ -35,7 +35,7 @@ workflows:
           path: test
           repo: azure-acr-orb
           configure-docker-credentials-store: false
-          tag: $CIRCLE_TAG
+          tag: $CIRCLE_BUILD_NUM
           filters: *filters
       - integration-test:
           filters: *filters
