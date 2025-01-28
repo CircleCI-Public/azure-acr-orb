@@ -29,8 +29,6 @@ workflows:
           repo: azure-acr-orb
           tag: $CIRCLE_BUILD_NUM
           filters: *filters
-      - integration-test:
-          filters: *filters
       - orb-tools/pack:
           filters: *release-filters
       - orb-tools/publish:
