@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  orb-tools: circleci/orb-tools@12.0
+  orb-tools: circleci/orb-tools@12.3.0
   azure-acr: {}
 
 filters: &filters
@@ -13,28 +13,21 @@ release-filters: &release-filters
   tags:
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
-jobs:
-  integration-test:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - run: echo "Placeholder for integration tests while we wait for Azure infrastructure."
-
 workflows:
   test-deploy:
     jobs:
-      # Until we redo our Azure infrastructure, we can't test this job
-      # - azure-acr/build-and-push-image:
-      #     name: build-and-push
-      #     context: orb-publishing
-      #     registry-name: azureacrorb
-      #     login-server-name: azureacrorb.azurecr.io
-      #     dockerfile: test.Dockerfile
-      #     path: test
-      #     repo: azure-acr-orb
-      #     tag: $CIRCLE_TAG
-      #     filters: *filters
-      - integration-test:
+      - azure-acr/build-and-push-image:
+          name: build-and-push
+          context: azure-acr-orb
+          registry-name: circleciorbstesting
+          login-server-name: circleciorbstesting.azurecr.io
+          azure-sp-tenant: AZURE_TENANT_ID
+          azure-sp: AZURE_APP_ID
+          azure-sp-password: AZURE_SECRET_VALUE
+          dockerfile: test.Dockerfile
+          path: test
+          repo: azure-acr-orb
+          tag: $CIRCLE_BUILD_NUM
           filters: *filters
       - orb-tools/pack:
           filters: *release-filters
@@ -44,5 +37,5 @@ workflows:
           pub_type: production
           requires:
             - orb-tools/pack
-          context: orb-publisher
+          context: azure-acr-orb
           filters: *release-filters
