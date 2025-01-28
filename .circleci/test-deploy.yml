@@ -13,13 +13,6 @@ release-filters: &release-filters
   tags:
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
-jobs:
-  integration-test:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - run: echo "Placeholder for integration tests while we wait for Azure infrastructure."
-
 workflows:
   test-deploy:
     jobs:
@@ -34,7 +27,6 @@ workflows:
           dockerfile: test.Dockerfile
           path: test
           repo: azure-acr-orb
-          configure-docker-credentials-store: false
           tag: $CIRCLE_BUILD_NUM
           filters: *filters
       - integration-test:
