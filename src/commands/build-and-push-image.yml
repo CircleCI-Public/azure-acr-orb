@@ -66,13 +66,6 @@ parameters:
       The Azure login server for your ACR instance,
       e.g. {yourregistryname}.azure.io
 
-  configure-docker-credentials-store:
-    type: boolean
-    default: true
-    description: >
-      Configure Docker to use a credentials store.
-      Supported platforms: Linux/macOS.
-
   repo:
     type: string
     description: Name of an ACR repository
@@ -159,7 +152,6 @@ steps:
 
   - acr-login:
       registry-name: <<parameters.registry-name>>
-      configure-docker-credentials-store: <<parameters.configure-docker-credentials-store>>
 
   - docker/build:
       step-name: Build Docker image for ACR
