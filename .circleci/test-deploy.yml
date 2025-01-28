@@ -37,5 +37,5 @@ workflows:
           pub_type: production
           requires:
             - orb-tools/pack
-          context: azure-acr-orb
+          context: orb-publisher
           filters: *release-filters
